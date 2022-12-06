@@ -27,6 +27,9 @@ module.exports = {
         planCard: "var(--planCard)",
         buttonBg: "var(--buttonBg)",
       },
+      backgroundSize: {
+        "100%": "100%",
+      },
     },
   },
   plugins: [],
