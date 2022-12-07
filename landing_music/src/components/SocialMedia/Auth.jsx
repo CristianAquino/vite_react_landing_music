@@ -1,5 +1,4 @@
 import { FaTwitter } from "react-icons/fa";
-import { Link } from "react-router-dom";
 
 const infoInputSty =
   "border-none outline-none bg-inputColor rounded-[8px] py-[4px] px-[8px] flex-1";
