@@ -4,6 +4,7 @@ import {
   AiOutlineHeart,
   AiOutlineShareAlt,
 } from "react-icons/ai";
+
 const Post = (data) => {
   return (
     //   post
