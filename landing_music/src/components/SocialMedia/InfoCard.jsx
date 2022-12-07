@@ -1,13 +1,20 @@
+import { useState } from "react";
 import { RiPencilLine } from "react-icons/ri";
+import ProfileModal from "./ProfileModal";
 
 const InfoCard = () => {
+  const [modalOpen, setModalOpen] = useState(false);
   return (
     //   infoCard
     <div className="flex flex-col gap-[0.75rem] bg-cardColor p-[1rem] rounded-[1rem] w-[90%]">
       {/* infoHead */}
       <div className="flex justify-between items-center">
         <h4>Your Info</h4>
-        <RiPencilLine className="text-[24px] hover:cursor-pointer" />
+        <RiPencilLine
+          className="text-[24px] hover:cursor-pointer"
+          onClick={() => setModalOpen(true)}
+        />
+        <ProfileModal modalOpened={modalOpen} setModalOpened={setModalOpen} />
       </div>
       {/* info */}
       <div>
