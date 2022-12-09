@@ -1,12 +1,70 @@
+import { useState } from "react";
 import { FaTwitter } from "react-icons/fa";
+import { useDispatch } from "react-redux";
+import { authFail, authStart, authSuccess } from "../../redux/slice/authSlice";
+import { logIn, signUp } from "../../https/authRequest";
 
-const infoInputSty =
-  "border-none outline-none bg-inputColor rounded-[8px] py-[4px] px-[8px] flex-1";
-
-const infoInputDivSty =
-  "flex gap-[1rem] h-[2rem] w-[100%] items-center justify-center";
+const initial = {
+  firstname: "",
+  lastname: "",
+  password: "",
+  confirmpass: "",
+  username: "",
+};
 
 const Auth = () => {
+  const dispatch = useDispatch();
+  const infoInputSty =
+    "border-none outline-none bg-inputColor rounded-[8px] py-[4px] px-[8px] flex-1";
+
+  const infoInputDivSty =
+    "flex gap-[1rem] h-[2rem] w-[100%] items-center justify-center";
+
+  const [isSignUp, setIsSignUp] = useState(true);
+
+  const [data, setData] = useState(initial);
+
+  const [confirmPass, setConfirmPass] = useState(true);
+
+  const resetForm = () => {
+    setConfirmPass(true);
+    setData(initial);
+  };
+
+  const handleSignUp = (data) => {
+    dispatch(authStart());
+    signUp(data)
+      .then((res) => dispatch(authSuccess(res)))
+      .catch((e) => {
+        console.error(e);
+        dispatch(authFail());
+      });
+  };
+  const handleLogIn = (data) => {
+    dispatch(authStart());
+    logIn(data)
+      .then((res) => dispatch(authSuccess(res)))
+      .catch((e) => {
+        console.error(e);
+        dispatch(authFail());
+      });
+  };
+
+  const handleChange = (e) => {
+    setData({ ...data, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (isSignUp) {
+      data.password === data.confirmpass
+        ? handleSignUp(data)
+        : setConfirmPass(false);
+    } else {
+      handleLogIn(data);
+    }
+  };
+
   return (
     //   auth
     <div className="flex items-center justify-center h-[100vh] gap-[4rem] relative">
@@ -23,102 +81,100 @@ const Auth = () => {
           </h6>
         </div>
       </div>
-      <LogIn />
+      {/* a right */}
+      <div>
+        {/* infoForm authform */}
+        <form
+          className="flex flex-col justify-center items-center gap-[2rem] bg-cardColor rounded-[1rem] p-[1rem]"
+          onSubmit={handleSubmit}
+        >
+          <h3 className="font-bold">{isSignUp ? "Sign Up" : "Log In"}</h3>
+          {isSignUp && (
+            <div className={infoInputDivSty}>
+              {/* infoInput */}
+              <input
+                type="text"
+                placeholder="First Name"
+                name="firstname"
+                className={infoInputSty}
+                onChange={handleChange}
+                value={data.firstname}
+              />
+              <input
+                type="text"
+                placeholder="Last Name"
+                name="lastname"
+                className={infoInputSty}
+                onChange={handleChange}
+                value={data.lastname}
+              />
+            </div>
+          )}
+
+          <div className={infoInputDivSty}>
+            {/* infoInput */}
+            <input
+              type="text"
+              placeholder="Userame"
+              name="username"
+              className={infoInputSty}
+              onChange={handleChange}
+              value={data.username}
+            />
+          </div>
+          <div className={infoInputDivSty}>
+            {/* infoInput */}
+            <input
+              type="password"
+              placeholder="Password"
+              name="password"
+              className={infoInputSty}
+              onChange={handleChange}
+              value={data.password}
+            />
+            {isSignUp && (
+              <input
+                type="password"
+                placeholder="Confirm Password"
+                name="confirmpass"
+                className={infoInputSty}
+                onChange={handleChange}
+                value={data.confirmpass}
+              />
+            )}
+          </div>
+          <span
+            className={
+              confirmPass
+                ? "hidden"
+                : "block text-red-500 text-[12px] self-end mr-[5px]"
+            }
+          >
+            *Confirm password is not same
+          </span>
+          <div>
+            <span
+              className="text-[12px] cursor-pointer"
+              onClick={() => {
+                setIsSignUp((prev) => !prev);
+                resetForm();
+              }}
+            >
+              {isSignUp
+                ? "Already have an account. Login!"
+                : "Don't have an account? Sign Up"}
+            </span>
+          </div>
+          <button
+            className="flex items-center justify-center self-end text-white border-none rounded-[0.5rem] bg-buttonBg h-[2rem] px-[20px] w-[6rem]hover:cursor-pointer "
+            type="submit"
+          >
+            {isSignUp ? "Signup" : "Login"}
+          </button>
+        </form>
+      </div>
     </div>
   );
 };
-
-function LogIn() {
-  return (
-    // a-right
-    <div>
-      {/* infoForm authform */}
-      <form className="flex flex-col justify-center items-center gap-[2rem] bg-cardColor rounded-[1rem] p-[1rem]">
-        <h3 className="font-bold">Log In</h3>
-        <div className={infoInputDivSty}>
-          {/* infoInput */}
-          <input
-            type="text"
-            placeholder="Username"
-            className={infoInputSty}
-            name="username"
-          />
-        </div>
-        <div className={infoInputDivSty}>
-          {/* infoInput */}
-          <input
-            type="password"
-            className={infoInputSty}
-            placeholder="Password"
-            name="password"
-          />
-        </div>
-        <div className="flex items-center gap-[2rem]">
-          <span className="text-[12px]">Don't have an account Sign up</span>
-          <button className="flex items-center justify-center self-end text-white border-none rounded-[0.5rem] bg-buttonBg h-[2rem] px-[20px] w-[6rem]hover:cursor-pointer ">
-            Login
-          </button>
-        </div>
-      </form>
-    </div>
-  );
-}
-
-function SignUp() {
-  return (
-    // a right
-    <div>
-      {/* infoForm authform */}
-      <form className="flex flex-col justify-center items-center gap-[2rem] bg-cardColor rounded-[1rem] p-[1rem]">
-        <h3 className="font-bold">Sign Up</h3>
-        <div className={infoInputDivSty}>
-          {/* infoInput */}
-          <input
-            type="text"
-            placeholder="First Name"
-            name="firstname"
-            className={infoInputSty}
-          />
-          <input
-            type="text"
-            placeholder="Last Name"
-            name="lastname"
-            className={infoInputSty}
-          />
-        </div>
-        <div className={infoInputDivSty}>
-          {/* infoInput */}
-          <input
-            type="text"
-            placeholder="Userames"
-            name="username"
-            className={infoInputSty}
-          />
-        </div>
-        <div className={infoInputDivSty}>
-          {/* infoInput */}
-          <input
-            type="text"
-            placeholder="Password"
-            name="password"
-            className={infoInputSty}
-          />
-          <input
-            type="text"
-            placeholder="Confirm Password"
-            name="confirmpassword"
-            className={infoInputSty}
-          />
-        </div>
-        <div>
-          <span className="text-[12px]">Already have an account. Login!</span>
-        </div>
-        <button className="flex items-center justify-center self-end text-white border-none rounded-[0.5rem] bg-buttonBg h-[2rem] px-[20px] w-[6rem]hover:cursor-pointer ">
-          Signup
-        </button>
-      </form>
-    </div>
-  );
-}
 
 export default Auth;
