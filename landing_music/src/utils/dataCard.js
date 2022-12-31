@@ -11,12 +11,6 @@ const dataCard = [
     image: "https://i.postimg.cc/FKtCrhkj/landing-Page-Fitnes.jpg",
     name: "landingpagefitnes",
   },
-  ,
-  {
-    route: routes.socialMedia,
-    image: "https://i.postimg.cc/FKtCrhkj/landing-Page-Fitnes.jpg",
-    name: "socialMedia",
-  },
 ];
 
 export default dataCard;
